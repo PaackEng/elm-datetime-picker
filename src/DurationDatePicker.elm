@@ -35,7 +35,7 @@ import DatePicker.Styles
 import DatePicker.Utilities as Utilities
 import Html exposing (Html, div, select, span, text)
 import Html.Attributes exposing (class, disabled, id)
-import Html.Events exposing (on, onClick, onMouseOut, onMouseOver)
+import Html.Events exposing (on, onClick, onMouseOut, onMouseOver, stopPropagationOn)
 import Html.Events.Extra exposing (targetValueIntParse)
 import Json.Decode as Decode
 import List.Extra as List
@@ -789,8 +789,13 @@ viewTimePicker settings model startOrEnd pickedTime =
             --
             -- It will be easier to reason through. However, at the moment, a few browsers are not compatible
             -- with that behaviour. See: https://caniuse.com/#search=oninput
-            [ div [ class (classPrefix ++ "select") ] [ select [ class "hour-select", disabled <| not selectEnabled, on "change" (Decode.map settings.internalMsg (Decode.map (\msg -> update settings msg (DatePicker model)) (Decode.map (SetHour startOrEnd) targetValueIntParse))) ] (Utilities.generateHourOptions selectableHours selectedHour) ]
+            [ div [ class (classPrefix ++ "select") ] [ select [ class "hour-select", disabled <| not selectEnabled, stopPropagationOn "change" (Decode.map alwaysStop (Decode.map settings.internalMsg (Decode.map (\msg -> update settings msg (DatePicker model)) (Decode.map (SetHour startOrEnd) targetValueIntParse)))) ] (Utilities.generateHourOptions selectableHours selectedHour) ]
             , div [ class (classPrefix ++ "select-spacer") ] [ text ":" ]
-            , div [ class (classPrefix ++ "select") ] [ select [ class "minute-select", disabled <| not selectEnabled, on "change" (Decode.map settings.internalMsg (Decode.map (\msg -> update settings msg (DatePicker model)) (Decode.map (SetMinute startOrEnd) targetValueIntParse))) ] (Utilities.generateMinuteOptions selectableMinutes selectedMinute) ]
+            , div [ class (classPrefix ++ "select") ] [ select [ class "minute-select", disabled <| not selectEnabled, stopPropagationOn "change" (Decode.map alwaysStop (Decode.map settings.internalMsg (Decode.map (\msg -> update settings msg (DatePicker model)) (Decode.map (SetMinute startOrEnd) targetValueIntParse)))) ] (Utilities.generateMinuteOptions selectableMinutes selectedMinute) ]
             ]
         ]
+
+
+alwaysStop : a -> ( a, Bool )
+alwaysStop x =
+    ( x, True )
