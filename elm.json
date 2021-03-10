@@ -1,9 +1,9 @@
 {
     "type": "package",
-    "name": "mercurymedia/elm-datetime-picker",
+    "name": "PaackEng/elm-datetime-picker",
     "summary": "a datetime picker component",
     "license": "MIT",
-    "version": "3.0.0",
+    "version": "1.0.0",
     "exposed-modules": [
         "DurationDatePicker",
         "SingleDatePicker"
